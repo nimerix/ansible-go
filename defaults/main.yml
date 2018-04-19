@@ -1,7 +1,7 @@
 ---
 set_go_path: true
 go_version: "1.10.1"
-go_users: [ "{{ ansible_workspace_user }}" ]
+go_users: [ "{{ ansible_user_id }}" ]
 go_install_path: "/usr/local"
 gopath_dirname: "go"
 go_append_version: False
