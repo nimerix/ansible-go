@@ -5,6 +5,6 @@ go_download_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else '386' if 
 go_download_filename: "go{{ go_version }}.{{ go_download_platform }}-{{ go_download_arch }}.{{ go_download_ext }}"
 go_download_url: "https://dl.google.com/go/{{ go_download_filename }}"
 go_download_checksum_url: "{{ go_download_url }}.sha256"
-go_download_checksum: "{{ lookup('url', '{{ go_download_url}}.sha256', split_lines=False ) }}"
+go_download_checksum: "sha256:{{ lookup('url', '{{ go_download_url}}.sha256', split_lines=False ) }}"
 go_version_output_string: "go version go{{ go_version }} {{ go_download_platform }}/{{ go_download_arch }}"
 go_install_dirname: "{{ 'go{{ go_version }}' if go_append_version else 'go' }}"
