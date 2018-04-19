@@ -22,18 +22,18 @@
   file:
     path: "{{ go_install_path }}/{{ go_install_dirname }}"
     state: absent
-  when: go_version|failed or go_version.stdout != go_version_output_string
+  when: go_version is failed or go_version.stdout != go_version_output_string
 
 - name: Extract the Go tarball if Go is not yet installed or not the desired version
   unarchive:
     src: "{{ go_temp_download_dir}}/{{ go_download_filename}}"
     dest: "{{ go_temp_download_dir}}"
     copy: no
-  when: go_version|failed or go_version.stdout != go_version_output_string
+  when: go_version is failed or go_version.stdout != go_version_output_string
 
 - name: Move the go install data to the correct location
   command: mv "{{ go_temp_download_dir}}/go" "{{ go_install_path }}/{{ go_install_dirname }}"
-  when: go_version|failed or go_version.stdout != go_version_output_string
+  when: go_version is failed or go_version.stdout != go_version_output_string
 
 - name: Add the Go bin directory to the PATH environment variable for all users
   template:
