@@ -42,7 +42,7 @@
 
 - name: Set GOPATH for all users
   template:
-    src: go-path.sh
+    src: go-path.sh.j2
     dest: /etc/profile.d
   when: set_go_path
 
