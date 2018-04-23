@@ -1,0 +1,57 @@
+---
+- name: Check if go is in the system path
+  command: which go
+  ignore_errors: yes
+  register: go_system_path_output
+  changed_when: false
+
+- debug: 
+    msg: 'Detected system go {{ go_system_path_output.stdout }}'
+  when: go_system_path_output is not failed
+
+- name: set GOROOT from environment
+  stat: path='{{ lookup('env', 'GOROOT' ) }}'
+  register: go_system_goroot
+
+- debug: 
+    msg: 'Detected system goroot {{ go_system_goroot.path }}'
+  when: go_system_goroot.stat.isdir is defined and go_system_goroot.stat.isdir
+
+- name: get GOROOT from environment
+  stat: path='{{ go_install_path }}/{{ go_install_dirname }}'
+  register: go_detected_goroot
+
+- debug: 
+    msg: 'Detected goroot {{ go_detected_goroot.path }}'
+  when: go_detected_goroot.stat.isdir is defined and go_detected_goroot.stat.isdir
+
+- name: get default GOROOT 
+  stat: path=/usr/local/go
+  register: go_default_goroot
+
+- debug:
+    msg: 'Detected default goroot {{ go_detected_goroot.path }}'
+  when: go_default_goroot.stat.isdir is defined and go_default_goroot.stat.isdir
+
+
+- name: set the gopath
+  set_fact:
+    go_goroot: "{{ go_default_goroot.path if go_default_goroot.stat.isdir is defined and go_default_goroot.stat.isdir else go_system_goroot if go_system_goroot.stat.isdir is defined and go_system_goroot.stat.isdir else '{{ go_install_path }}/{{ go_install_dirname }}' }}"
+
+- debug:
+    msg: 'Found goroot {{ go_goroot }}'
+
+
+- name: Register the current Go version (if any)
+  command: "{{ go_goroot }}/bin/go version"
+  ignore_errors: yes
+  register: go_version_local_output
+  changed_when: false
+
+- name: check detected goroot
+  stat: path='{{ go_goroot }}'
+  register: go_goroot_path
+
+- name: set go state
+  set_fact:
+    go_state: "{{ 'latest' if go_version_local_output is not failed and go_version_local_output.stdout == go_version_expected_stdout else 'present' if go_goroot_path.stat.isdir is defined and go_goroot_path.stat.isdir else 'absent' }}"

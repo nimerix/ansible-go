@@ -1,0 +1,22 @@
+---
+- name: Add the Go bin directory to the PATH environment variable for all users
+  template:
+    src: go-bin.sh.j2
+    dest: /etc/profile.d
+
+- name: Set GOPATH for all users
+  template:
+    src: go-path.sh.j2
+    dest: /etc/profile.d
+  when: set_go_path
+
+- name: Create GOPATH for specified users
+  file:
+    path: "/home/{{ item[0] }}/{{go_gopath_dir_name}}/{{ item[1] }}"
+    state: directory
+    mode: 0755
+    owner: "{{ item[0] }}"
+    group: "{{ item[0] }}"
+  with_nested:
+    - "{{ go_users }}"
+    - [ 'src', 'pkg', 'bin' ]

@@ -1,0 +1,5 @@
+---
+- name: Remove old installation of Go
+  file:
+    path: "{{ item }}"
+    state: absent
