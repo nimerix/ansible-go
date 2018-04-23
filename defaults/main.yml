@@ -3,5 +3,5 @@ set_go_path: true
 go_version: "1.10.1"
 go_users: [ "{{ ansible_ssh_user }}" ]
 go_install_path: "/usr/local"
-gopath_dirname: "go"
-go_append_version: False
+go_gopath_dir_name: "go"
+go_append_version: false
