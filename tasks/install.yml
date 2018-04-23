@@ -13,15 +13,10 @@
     dest: "{{go_temp_download_dir.path}}/{{ go_download_filename }}"
     checksum: "{{ go_download_checksum }}"
 
-
 - name: Extract the Go tarball if Go is not yet installed or not the desired version
   unarchive:
     src: "{{ go_temp_download_dir.path}}/{{ go_download_filename}}"
-    dest: "{{ go_temp_download_dir.path}}"
+    dest: "{{ go_install_path }}"
     copy: no
-  when: go_version_local_output is failed or go_version_local_output.stdout != go_version_expected_stdout
 
-- name: Move the go install data to the correct location
-  command: mv "{{ go_temp_download_dir.path}}/go" "{{ go_install_path }}/{{ go_install_dirname }}"
-  when: go_version_local_output is failed or go_version_local_output.stdout != go_version_expected_stdout
 

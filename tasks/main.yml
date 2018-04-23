@@ -1,18 +1,5 @@
 ---
-# - name: Register the current Go version (if any)
-#   command: "{{ go_install_path }}/{{ go_install_dirname }}/bin/go version"
-#   ignore_errors: yes
-#   register: go_version_local_output
-#   changed_when: false
-
 - include: version.yml
-
-- include_tasks: clean.yml
-  loop:
-    - '{{ go_goroot }}'
-  when: go_state is 'present'
-
-- include_tasks: install.yml
-  when: go_state is not 'latest'
-
+- include: install.yml
+  when: go_state != 'current'
 - include: configure.yml
